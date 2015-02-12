@@ -125,24 +125,23 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # set the list of dependant libraries
     if(ARG_DEPENDS)
-        set(EXTRA_LIBS)
         foreach(LIB ${ARG_DEPENDS})
             if(TARGET ${LIB})
-                # item is a CMake target
+                # item is a CMake target, extract the library path
                 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
                     get_property(LIB_PATH TARGET ${LIB} PROPERTY DEBUG_LOCATION)
                 else()
                     get_property(LIB_PATH TARGET ${LIB} PROPERTY LOCATION)
                 endif()
-                list(APPEND EXTRA_LIBS ${LIB_PATH})
-            else()
-                # item is a path
-                list(APPEND EXTRA_LIBS ${LIB})
+                set(LIB ${LIB_PATH})
             endif()
+        if(EXTRA_LIBS)
+            set(EXTRA_LIBS "${EXTRA_LIBS},${LIB}")
+        else()
+            set(EXTRA_LIBS "${LIB}")
+        endif()
         endforeach()
-        string (REPLACE ";" "," QT_ANDROID_APP_EXTRA_LIBS "${EXTRA_LIBS}")
-    else()
-        set(QT_ANDROID_APP_EXTRA_LIBS) # empty
+        set(QT_ANDROID_APP_EXTRA_LIBS "\"android-extra-libs\": \"${EXTRA_LIBS}\",")
     endif()
 
     # make sure that the output directory for the Android package exists
