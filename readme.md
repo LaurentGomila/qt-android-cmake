@@ -34,6 +34,11 @@ else()
 endif()
 ```
 
+It is necessary to set the version of the application for this to work : 
+```cmake
+set_target_properties(my_app PROPERTIES VERSION 1)
+```
+
 Then all you have to do is to call the ```add_qt_android_apk``` macro to create a new target that will create the Android APK.
 
 ```cmake
