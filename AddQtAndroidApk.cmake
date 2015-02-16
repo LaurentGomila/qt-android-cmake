@@ -114,7 +114,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
 
         # use the major version number for code version (must be a single number)
-        string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE ${QT_ANDROID_APP_VERSION})
+        string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE "${QT_ANDROID_APP_VERSION}")
 
         # create a subdirectory for the extra package sources
         set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/package")
