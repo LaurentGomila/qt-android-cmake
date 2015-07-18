@@ -106,16 +106,28 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_PACKAGE_NAME org.qtproject.${SOURCE_TARGET})
     endif()
 
+    # get app version
+    get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
+
+    # use the major version number for code version (must be a single number)
+    string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE "${QT_ANDROID_APP_VERSION}")
+
     # define the application source package directory
     if(ARG_PACKAGE_SOURCES)
-        set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT ${ARG_PACKAGE_SOURCES})
+        if(EXISTS ${ARG_PACKAGE_SOURCES}/AndroidManifest.xml.in)
+            # create a subdirectory for the extra package sources
+            set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/package")
+
+            # copy all source files to the extra package sources
+            file(COPY ${ARG_PACKAGE_SOURCES} DESTINATION "${QT_ANDROID_APP_PACKAGE_SOURCE_ROOT}")
+
+            # generate a manifest from the template
+            configure_file(${ARG_PACKAGE_SOURCES}/AndroidManifest.xml.in ${QT_ANDROID_APP_PACKAGE_SOURCE_ROOT}/AndroidManifest.xml @ONLY)
+        else()
+            # Use original package sources directly
+            set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT ${ARG_PACKAGE_SOURCES})
+        endif()
     else()
-        # get app version
-        get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
-
-        # use the major version number for code version (must be a single number)
-        string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE "${QT_ANDROID_APP_VERSION}")
-
         # create a subdirectory for the extra package sources
         set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/package")
 
