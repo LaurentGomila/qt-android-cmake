@@ -176,9 +176,10 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     # create the custom target that invokes ANT to create the apk
     add_custom_target(
         ${TARGET}
-        ALL
         COMMAND ${QT_ANDROID_ANT} ${ANT_CONFIG}
         DEPENDS run_android_deploy_qt
     )
+
+    install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target \"${TARGET}\")")
 
 endmacro()
