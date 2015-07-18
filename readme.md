@@ -118,27 +118,13 @@ add_qt_android_apk(my_app_apk my_app
 
 The path to a directory containing additional files for the package (custom manifest, resources, translations, Java classes, ...). If you were using a regular QMake project file (.pro), this directory would be the one that you assign to the  ```ANDROID_PACKAGE_SOURCE_DIR``` variable.
 
-If you don't provide this argument, a default manifest is generated from a template file (see PACKAGE_MANIFEST) and automatically used for building the APK.
-
-Example:
-
-```cmake
-add_qt_android_apk(my_app_apk my_app
-    PACKAGE_SOURCES ${CMAKE_CURRENT_LIST_DIR}/my-android-sources
-)
-```
-
-### PACKAGE_MANIFEST
-
-A custom manifest file to use instead of the ```AndroidManifest.xml.in``` template. This option has no effect if ```PACKAGE_SOURCES``` is specified.
-
 If you don't provide this argument, a default manifest is generated from the ```AndroidManifest.xml.in``` template and automatically used for building the APK.
 
 Example:
 
 ```cmake
 add_qt_android_apk(my_app_apk my_app
-    PACKAGE_MANIFEST ${CMAKE_CURRENT_SOURCE_DIR}/AndroidManifest.xml.in
+    PACKAGE_SOURCES ${CMAKE_CURRENT_LIST_DIR}/my-android-sources
 )
 ```
 
