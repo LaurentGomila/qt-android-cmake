@@ -76,7 +76,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL;TARGET_INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
 
     # check the configuration
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -173,13 +173,24 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
       COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --ant ${QT_ANDROID_ANT} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
     )
 
-    # create the custom target that invokes ANT to create the apk
-    add_custom_target(
-        ${TARGET}
-        COMMAND ${QT_ANDROID_ANT} ${ANT_CONFIG}
-        DEPENDS run_android_deploy_qt
-    )
+    if (ARG_TARGET_INSTALL)
+        # create the custom target that invokes ANT to create the apk
+        add_custom_target(
+            ${TARGET}
+            COMMAND ${QT_ANDROID_ANT} ${ANT_CONFIG}
+            DEPENDS run_android_deploy_qt
+        )
 
-    install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target \"${TARGET}\")")
+        # add the custom target to the install target
+        install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target \"${TARGET}\")")
+    else()
+        # create the custom target that invokes ANT to create the apk and add it to the default build target
+        add_custom_target(
+            ${TARGET}
+            ALL
+            COMMAND ${QT_ANDROID_ANT} ${ANT_CONFIG}
+            DEPENDS run_android_deploy_qt
+        )
+    endif()
 
 endmacro()
