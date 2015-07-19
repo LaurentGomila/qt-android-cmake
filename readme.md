@@ -177,6 +177,18 @@ add_qt_android_apk(my_app_apk my_app
 )
 ```
 
+### TARGET_INSTALL
+
+If this option is given, the APK will be created in the install phase only (e.g. when running `make install`) and not during the default build target (e.g. when running `make`).
+
+Example:
+
+```cmake
+add_qt_android_apk(my_app_apk my_app
+    TARGET_INSTALL
+)
+```
+
 ## Contact
 
 Laurent Gomila: laurent.gom@gmail.com
