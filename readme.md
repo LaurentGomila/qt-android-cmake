@@ -24,11 +24,12 @@ if(ANDROID)
 endif()
 ```
 
-The first thing to do is to change your executable target into a library, because on Android, the entry point has to be a Java activity, and your C++ code is then loaded (as a library) and called by this activity.
+The first thing to do is to change your executable target into a library, because on Android, the entry point has to be a Java activity, and your C++ code is then loaded (as a library) and called by this activity. Your APK also requires a version number, which you set as property.
 
 ```cmake
 if(ANDROID)
     add_library(my_app SHARED ...)
+    set_property(TARGET my_app PROPERTY VERSION my_version)
 else()
     add_executable(my_app ...)
 endif()
@@ -67,12 +68,14 @@ You can then run CMake:.
 ```
 cmake -G"MinGW Makefiles"
       -DCMAKE_TOOLCHAIN_FILE=<qt-android-cmake>/toolchain/android.toolchain.cmake 
+      -DCMAKE_PREFIX_PATH=<path_to_Qt_for_Android>
       -DCMAKE_MAKE_PROGRAM="%ANDROID_NDK%/prebuilt/windows/bin/make.exe" .
 ```
 
 **On Linux**
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=path/to/the/android.toolchain.cmake .
+cmake -DCMAKE_TOOLCHAIN_FILE=path/to/the/android.toolchain.cmake 
+      -DCMAKE_PREFIX_PATH=<path_to_Qt_for_Android> .
 ```
 
 **On Mac OS X**
