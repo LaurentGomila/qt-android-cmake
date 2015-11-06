@@ -158,9 +158,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         endif()
     endif()
 
-    # check if the apok must be installed to the device
+    # check if the apk must be installed to the device
     if(ARG_INSTALL)
-        set(INSTALL_OPTIONS --install)
+        set(INSTALL_OPTIONS --reinstall)
     endif()
 
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
