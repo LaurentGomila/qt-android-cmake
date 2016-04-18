@@ -142,7 +142,7 @@ add_qt_android_apk(my_app_apk my_app
 
 ### KEYSTORE_PASSWORD
 
-The password associated to the gicen keystore. Note that this option is only considered if the ```KEYSTORE``` argument is used. If it is not given, the password will be asked directly in the console at build time.
+The password associated to the given keystore. Note that this option is only considered if the ```KEYSTORE``` argument is used. If it is not given, the password will be asked directly in the console at build time.
 
 Example:
 
