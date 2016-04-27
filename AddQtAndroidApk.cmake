@@ -76,7 +76,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_VERSION;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
 
     # check the configuration
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -111,7 +111,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT ${ARG_PACKAGE_SOURCES})
     else()
         # get app version
-        get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
+        if(ARG_PACKAGE_VERSION)
+            set(QT_ANDROID_APP_VERSION ${ARG_PACKAGE_VERSION})
+        else()
+            get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
+        endif()
 
         # use the major version number for code version (must be a single number)
         string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE "${QT_ANDROID_APP_VERSION}")
