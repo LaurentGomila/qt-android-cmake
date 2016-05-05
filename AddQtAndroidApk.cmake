@@ -70,13 +70,14 @@ include(CMakeParseArguments)
 #     KEYSTORE ${CMAKE_CURRENT_LIST_DIR}/mykey.keystore myalias
 #     KEYSTORE_PASSWORD xxxx
 #     DEPENDS a_linked_target "path/to/a_linked_library.so" ...
+#     EXTRA_PLUGINS extra plugins (such as 3rd party QML imports) to be included in the apk
 #     INSTALL
 #)
 # 
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD;EXTRA_PLUGINS" "DEPENDS;KEYSTORE" ${ARGN})
 
     # check the configuration
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -142,6 +143,10 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         endif()
         endforeach()
         set(QT_ANDROID_APP_EXTRA_LIBS "\"android-extra-libs\": \"${EXTRA_LIBS}\",")
+    endif()
+
+    if(ARG_EXTRA_PLUGINS)
+        set(QT_ANDROID_EXTRA_PLUGINS "\"android-extra-plugins\": \"${ARG_EXTRA_PLUGINS}\",")
     endif()
 
     # make sure that the output directory for the Android package exists
