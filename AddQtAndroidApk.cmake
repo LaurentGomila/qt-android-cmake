@@ -65,6 +65,7 @@ include(CMakeParseArguments)
 # example:
 # add_qt_android_apk(my_app_apk my_app
 #     NAME "My App"
+#     VERSION_CODE 12
 #     PACKAGE_NAME "org.mycompany.myapp"
 #     PACKAGE_SOURCES ${CMAKE_CURRENT_LIST_DIR}/my-android-sources
 #     KEYSTORE ${CMAKE_CURRENT_LIST_DIR}/mykey.keystore myalias
@@ -76,7 +77,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
 
     # check the configuration
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -110,11 +111,17 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     if(ARG_PACKAGE_SOURCES)
         set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT ${ARG_PACKAGE_SOURCES})
     else()
-        # get app version
-        get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
+        # get version code from arguments, or generate a fixed one if not provided
+        set(QT_ANDROID_APP_VERSION_CODE ${ARG_VERSION_CODE})
+        if(NOT QT_ANDROID_APP_VERSION_CODE)
+            set(QT_ANDROID_APP_VERSION_CODE 1)
+        endif()
 
-        # use the major version number for code version (must be a single number)
-        string(REGEX MATCH "[0-9]+" QT_ANDROID_APP_VERSION_CODE "${QT_ANDROID_APP_VERSION}")
+        # try to extract the app version from the target properties, or use the version code if not provided
+        get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
+        if(NOT QT_ANDROID_APP_VERSION)
+            set(QT_ANDROID_APP_VERSION ${QT_ANDROID_APP_VERSION_CODE})
+        endif()
 
         # create a subdirectory for the extra package sources
         set(QT_ANDROID_APP_PACKAGE_SOURCE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/package")
