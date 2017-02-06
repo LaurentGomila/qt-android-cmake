@@ -3,6 +3,7 @@
  "qt": "@QT_ANDROID_QT_ROOT@",
  "sdk": "@QT_ANDROID_SDK_ROOT@",
  "ndk": "@QT_ANDROID_NDK_ROOT@",
+ "sdkBuildToolsRevision": "@QT_ANDROID_SDK_BUILDTOOLS_REVISION@",
  "toolchain-prefix": "@ANDROID_TOOLCHAIN_MACHINE_NAME@",
  "tool-prefix": "@ANDROID_TOOLCHAIN_MACHINE_NAME@",
  "toolchain-version": "@ANDROID_COMPILER_VERSION@",

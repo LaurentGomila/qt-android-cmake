@@ -77,7 +77,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD;BUILDTOOLS_REVISION" "DEPENDS;KEYSTORE" ${ARGN})
 
     # check the configuration
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -105,6 +105,13 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_PACKAGE_NAME ${ARG_PACKAGE_NAME})
     else()
         set(QT_ANDROID_APP_PACKAGE_NAME org.qtproject.${SOURCE_TARGET})
+    endif()
+
+    # set the Android SDK build-tools revision
+    if(ARG_BUILDTOOLS_REVISION)
+        set(QT_ANDROID_SDK_BUILDTOOLS_REVISION ${ARG_BUILDTOOLS_REVISION})
+    else()
+        set(QT_ANDROID_SDK_BUILDTOOLS_REVISION "")
     endif()
 
     # define the application source package directory
