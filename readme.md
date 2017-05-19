@@ -59,7 +59,6 @@ First, you must make sure that the following environment variables are defined:
 Additionally you can define the following ones, but you can also define them as CMake variables if you prefer:
 
 * ```ANDROID_SDK```: root directory of the Android SDK
-* ```ANT```: Path of the ANT executable
 
 You can then run CMake:.
 

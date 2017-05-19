@@ -46,18 +46,6 @@ endif()
 string(REPLACE "\\" "/" QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT}) # androiddeployqt doesn't like backslashes in paths
 message(STATUS "Found Android NDK: ${QT_ANDROID_NDK_ROOT}")
 
-# find ANT
-if(NOT QT_ANDROID_ANT)
-    set(QT_ANDROID_ANT $ENV{ANT})
-    if(NOT QT_ANDROID_ANT)
-        find_program(QT_ANDROID_ANT NAME ant)
-        if(NOT QT_ANDROID_ANT)
-            message(FATAL_ERROR "Could not find ANT. Please add its directory to the PATH environment variable, or set the ANT environment variable or QT_ANDROID_ANT CMake variable to its path.")
-        endif()
-    endif()
-endif()
-message(STATUS "Found ANT: ${QT_ANDROID_ANT}")
-
 include(CMakeParseArguments)
 
 # define a macro to create an Android APK target
@@ -79,13 +67,6 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
     cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD;BUILDTOOLS_REVISION" "DEPENDS;KEYSTORE" ${ARGN})
-
-    # check the configuration
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(ANT_CONFIG debug)
-    else()
-        set(ANT_CONFIG release)
-    endif()
 
     # extract the full path of the source target binary
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -184,21 +165,14 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
 
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
-    add_custom_command(
-      OUTPUT run_android_deploy_qt
-      DEPENDS ${SOURCE_TARGET}
-      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI} # it seems that recompiled libraries are not copied if we don't remove them first
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
-      COMMAND ${CMAKE_COMMAND} -E copy ${QT_ANDROID_APP_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
-      COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --ant ${QT_ANDROID_ANT} ${TARGET_LEVEL_OPTIONS} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
-    )
-
-    # create the custom target that invokes ANT to create the apk
     add_custom_target(
         ${TARGET}
         ALL
-        COMMAND ${QT_ANDROID_ANT} ${ANT_CONFIG}
-        DEPENDS run_android_deploy_qt
+        DEPENDS ${SOURCE_TARGET}
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI} # it seems that recompiled libraries are not copied if we don't remove them first
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
+        COMMAND ${CMAKE_COMMAND} -E copy ${QT_ANDROID_APP_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
+        COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --gradle ${TARGET_LEVEL_OPTIONS} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
     )
 
 endmacro()
