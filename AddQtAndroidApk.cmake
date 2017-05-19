@@ -178,6 +178,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(INSTALL_OPTIONS --reinstall)
     endif()
 
+    # specify the Android API level
+    if(ANDROID_NATIVE_API_LEVEL)
+        set(TARGET_LEVEL_OPTIONS --android-platform ${ANDROID_NATIVE_API_LEVEL})
+    endif()
+
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
     add_custom_command(
       OUTPUT run_android_deploy_qt
@@ -185,7 +190,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI} # it seems that recompiled libraries are not copied if we don't remove them first
       COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
       COMMAND ${CMAKE_COMMAND} -E copy ${QT_ANDROID_APP_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
-      COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --ant ${QT_ANDROID_ANT} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
+      COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --ant ${QT_ANDROID_ANT} ${TARGET_LEVEL_OPTIONS} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
     )
 
     # create the custom target that invokes ANT to create the apk
