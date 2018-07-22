@@ -203,6 +203,19 @@ add_qt_android_apk(my_app_apk my_app
     INSTALL
 )
 ```
+## Troubleshooting
+
+In case of 
+```
+-- Configuring done
+CMake Error in CMakeLists.txt:
+  No known features for CXX compiler
+
+  "GNU"
+
+  version 4.9.
+```
+see [Qt bug 54666](https://bugreports.qt.io/browse/QTBUG-54666) for details.
 
 ## Contact
 
