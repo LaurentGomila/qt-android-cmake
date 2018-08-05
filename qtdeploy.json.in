@@ -12,6 +12,7 @@
  "application-binary": "@QT_ANDROID_APP_PATH@",
  "android-package": "@QT_ANDROID_APP_PACKAGE_NAME@",
  "android-app-name": "@QT_ANDROID_APP_NAME@",
+ "qml-root-path": "@CMAKE_SOURCE_DIR@",
  @QT_ANDROID_APP_EXTRA_LIBS@
  "android-package-source-directory": "@QT_ANDROID_APP_PACKAGE_SOURCE_ROOT@"
 }
