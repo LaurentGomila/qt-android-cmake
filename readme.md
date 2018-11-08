@@ -6,7 +6,7 @@ When using Qt for Android development, QMake & QtCreator is the only sane option
 
 This utility tries to avoids this by providing a CMake way of doing Android compilation and deployment, without QtCreator. It is based on:
 
-* the Android CMake toolchain at https://github.com/taka-no-me/android-cmake
+* the Android CMake toolchains available in the NDK
 * the ```androiddeployqt``` utility from the Qt Android SDK
 * the QML / Android example at https://github.com/calincru/QML-Android-Demo
 
@@ -65,8 +65,8 @@ You can then run CMake:.
 **On Windows**
 ```
 cmake -G"MinGW Makefiles"
-      -DCMAKE_TOOLCHAIN_FILE=<qt-android-cmake>/toolchain/android.toolchain.cmake 
-      -DCMAKE_MAKE_PROGRAM="%ANDROID_NDK%/prebuilt/windows/bin/make.exe" .
+      -DCMAKE_TOOLCHAIN_FILE="%ANDROID_NDK%/build/cmake/android.toolchain.cmake" 
+      -DCMAKE_MAKE_PROGRAM="%ANDROID_NDK%/prebuilt/windows-x86_64/bin/make.exe" .
 ```
 
 **On Linux**
