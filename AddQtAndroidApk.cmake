@@ -122,7 +122,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     # define the STL shared library path
     if(ANDROID_STL_SHARED_LIBRARIES)
         list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
-        set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
+        if(ANDROID_STL_PATH)
+            set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
+        else()
+            set(QT_ANDROID_STL_PATH "${ANDROID_NDK}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
+        endif()
     else()
         set(QT_ANDROID_STL_PATH)
     endif()
