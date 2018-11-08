@@ -28,6 +28,8 @@
 		</activity>
 	</application>
 	<supports-screens android:anyDensity="true" android:normalScreens="true" android:smallScreens="true" android:largeScreens="true"/>
+    <!-- %%INSERT_PERMISSIONS -->
 	<uses-sdk android:minSdkVersion="18" android:targetSdkVersion="19"/>
 	<uses-permission android:name="android.permission.INTERNET" />
+    <!-- %%INSERT_FEATURES -->
 </manifest>
