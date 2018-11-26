@@ -141,20 +141,6 @@ add_qt_android_apk(my_app_apk my_app
 )
 ```
 
-### BUILDTOOLS_REVISION
-
-The revision of the Android SDK build tools. This must match a valid sub-folder of your <ANDROID_SDK>/build-tools directory. It seems like it can sometimes be needed, when the system cannot auto-detect it.
-
-Remains empty if not given.
-
-Example:
-
-```cmake
-add_qt_android_apk(my_app_apk my_app
-    BUILDTOOLS_REVISION "23.0.3"
-)
-```
-
 ### KEYSTORE
 
 The path to a keystore file and an alias, for signing the APK. If not provided, the APK won't be signed.

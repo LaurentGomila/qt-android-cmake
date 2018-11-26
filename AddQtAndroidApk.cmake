@@ -56,7 +56,6 @@ include(CMakeParseArguments)
 #     VERSION_CODE 12
 #     PACKAGE_NAME "org.mycompany.myapp"
 #     PACKAGE_SOURCES ${CMAKE_CURRENT_LIST_DIR}/my-android-sources
-#     BUILDTOOLS_REVISION "23.0.3"
 #     KEYSTORE ${CMAKE_CURRENT_LIST_DIR}/mykey.keystore myalias
 #     KEYSTORE_PASSWORD xxxx
 #     DEPENDS a_linked_target "path/to/a_linked_library.so" ...
@@ -66,7 +65,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD;BUILDTOOLS_REVISION" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
 
     # extract the full path of the source target binary
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -89,12 +88,16 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_PACKAGE_NAME org.qtproject.${SOURCE_TARGET})
     endif()
 
-    # set the Android SDK build-tools revision
-    if(ARG_BUILDTOOLS_REVISION)
-        set(QT_ANDROID_SDK_BUILDTOOLS_REVISION ${ARG_BUILDTOOLS_REVISION})
-    else()
-        set(QT_ANDROID_SDK_BUILDTOOLS_REVISION "")
-    endif()
+    # detect latest Android SDK build-tools revision
+    set(QT_ANDROID_SDK_BUILDTOOLS_REVISION "0.0.0")
+    file(GLOB ALL_BUILD_TOOLS_VERSIONS RELATIVE ${QT_ANDROID_SDK_ROOT}/build-tools ${QT_ANDROID_SDK_ROOT}/build-tools/*)
+    foreach(BUILD_TOOLS_VERSION ${ALL_BUILD_TOOLS_VERSIONS})
+        # find subfolder with greatest version
+        if (${BUILD_TOOLS_VERSION} VERSION_GREATER ${QT_ANDROID_SDK_BUILDTOOLS_REVISION})
+            set(QT_ANDROID_SDK_BUILDTOOLS_REVISION ${BUILD_TOOLS_VERSION})
+        endif()
+    endforeach()
+    message("Detected Android SDK build tools version ${QT_ANDROID_SDK_BUILDTOOLS_REVISION}")
 
     # define the application source package directory
     if(ARG_PACKAGE_SOURCES)
