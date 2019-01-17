@@ -104,11 +104,12 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     ENDIF()
 
     SET(QT_ANDROID_APP_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${SOURCE_TARGET}-${ANDROID_ABI})
-    IF(ARGS_ANDROID_MANIFEST_IN_PATH)
-        SET(QT_ANDROID_MANIFEST_IN_REAL_PATH ${ARGS_ANDROID_MANIFEST_IN_PATH})
+    IF(ARG_ANDROID_MANIFEST_IN_PATH)
+        SET(QT_ANDROID_MANIFEST_IN_REAL_PATH ${ARG_ANDROID_MANIFEST_IN_PATH})
     ELSE()
         SET(QT_ANDROID_MANIFEST_IN_REAL_PATH ${QT_ANDROID_SOURCE_DIR}/AndroidManifest.xml.in)
     ENDIF()
+    MESSAGE(STATUS "Used input AndroidManifest file QT_ANDROID_MANIFEST_IN_REAL_PATH : ${QT_ANDROID_MANIFEST_IN_REAL_PATH}")
 
     # get version code from arguments, or generate a fixed one if not provided
     set(QT_ANDROID_APP_VERSION_CODE ${ARG_VERSION_CODE})
@@ -247,9 +248,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         "Release | MinSizeRel | RelWithDebInfo | Debug. No --release or --debug will be specified to androiddeployqt")
     ENDIF()
 
-    IF(ARGS_VERBOSE)
+    IF(ARG_VERBOSE)
         SET(QT_ANDROID_VERBOSE --verbose)
-    ENDIF(ARGS_VERBOSE)
+    ENDIF(ARG_VERBOSE)
 
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
     add_custom_target(
