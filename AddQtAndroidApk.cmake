@@ -138,19 +138,14 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     if(ARG_DEPENDS)
         foreach(LIB ${ARG_DEPENDS})
             if(TARGET ${LIB})
-                # item is a CMake target, extract the library path
-                if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-                    get_property(LIB_PATH TARGET ${LIB} PROPERTY DEBUG_LOCATION)
-                else()
-                    get_property(LIB_PATH TARGET ${LIB} PROPERTY LOCATION)
-                endif()
-                set(LIB ${LIB_PATH})
+                set(LIB "$<TARGET_FILE:${LIB}>")
             endif()
-        if(EXTRA_LIBS)
-            set(EXTRA_LIBS "${EXTRA_LIBS},${LIB}")
-        else()
-            set(EXTRA_LIBS "${LIB}")
-        endif()
+            
+            if(EXTRA_LIBS)
+                set(EXTRA_LIBS "${EXTRA_LIBS},${LIB}")
+            else()
+                set(EXTRA_LIBS "${LIB}")
+            endif()
         endforeach()
         set(QT_ANDROID_APP_EXTRA_LIBS "\"android-extra-libs\": \"${EXTRA_LIBS}\",")
     endif()
@@ -170,7 +165,13 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI})
 
     # create the configuration file that will feed androiddeployqt
-    configure_file(${QT_ANDROID_SOURCE_DIR}/qtdeploy.json.in ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json @ONLY)
+    # 1. replace placeholder variables at generation time
+    configure_file(${QT_ANDROID_SOURCE_DIR}/qtdeploy.json.in ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json.in @ONLY)
+    # 2. evaluate generator expressions at build time
+    file(GENERATE
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json.in
+    )
 
     # check if the apk must be signed
     if(ARG_KEYSTORE)
