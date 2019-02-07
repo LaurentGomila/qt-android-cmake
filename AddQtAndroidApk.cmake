@@ -122,7 +122,21 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         configure_file(${QT_ANDROID_SOURCE_DIR}/AndroidManifest.xml.in ${QT_ANDROID_APP_PACKAGE_SOURCE_ROOT}/AndroidManifest.xml @ONLY)
     endif()
 
+    # newer NDK toolchains don't define ANDROID_STL_PREFIX anymore,
+    # so this is a fallback to the only supported value in recent versions
+    if(NOT ANDROID_STL_PREFIX)
+        if(ANDROID_STL MATCHES "^c\\+\\+_")
+            set(ANDROID_STL_PREFIX llvm-libc++)
+        endif()
+    endif()
+    
+    if(NOT ANDROID_STL_PREFIX)
+        message("Failed to determine ANDROID_STL_PREFIX value for ANDROID_STL=${ANDROID_STL}.")
+    endif()
+    
     # define the STL shared library path
+    # up until NDK r18, ANDROID_STL_SHARED_LIBRARIES is populated by the NDK's toolchain file
+    # since NDK r19, the only option for a shared STL library is libc++_shared
     if(ANDROID_STL_SHARED_LIBRARIES)
         list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
         if(ANDROID_STL_PATH)
@@ -130,6 +144,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         else()
             set(QT_ANDROID_STL_PATH "${ANDROID_NDK}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
         endif()
+    elseif(ANDROID_STL STREQUAL c++_shared)
+        set(QT_ANDROID_STL_PATH "${ANDROID_NDK}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
     else()
         set(QT_ANDROID_STL_PATH)
     endif()
@@ -149,16 +165,32 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         endforeach()
         set(QT_ANDROID_APP_EXTRA_LIBS "\"android-extra-libs\": \"${EXTRA_LIBS}\",")
     endif()
-
+    
+    # determine whether to use the gcc- or llvm/clang-toolchain
+    # if ANDROID_USE_LLVM was explicitly set, use it its value directly
+    # otherwise, ANDROID_TOOLCHAIN value (set by the NDK's toolchain file) says whether llvm/clang or gcc is used
+    if(DEFINED ANDROID_USE_LLVM)
+        string(TOLOWER "${ANDROID_USE_LLVM}" QT_ANDROID_USE_LLVM)
+    elseif(ANDROID_TOOLCHAIN STREQUAL clang)
+        set(QT_ANDROID_USE_LLVM "true")
+    else()
+        set(QT_ANDROID_USE_LLVM "false")
+    endif()
+    
     # set some toolchain variables used by androiddeployqt;
     # unfortunately, Qt tries to build paths from these variables although these full paths
-    # are already available in the toochain file, so we have to parse them
-    string(REGEX MATCH "${ANDROID_NDK}/toolchains/(.*)-(.*)/prebuilt/.*" ANDROID_TOOLCHAIN_PARSED ${ANDROID_TOOLCHAIN_ROOT})
-    if(ANDROID_TOOLCHAIN_PARSED)
-        set(QT_ANDROID_TOOLCHAIN_PREFIX ${CMAKE_MATCH_1})
-        set(QT_ANDROID_TOOLCHAIN_VERSION ${CMAKE_MATCH_2})
+    # are already available in the toochain file, so we have to parse them if using gcc
+    if(QT_ANDROID_USE_LLVM STREQUAL "true")
+        set(QT_ANDROID_TOOLCHAIN_PREFIX "llvm")
+        set(QT_ANDROID_TOOLCHAIN_VERSION)
     else()
-        message(FATAL_ERROR "Failed to parse ANDROID_TOOLCHAIN_ROOT to get toolchain prefix and version")
+        string(REGEX MATCH "${ANDROID_NDK}/toolchains/(.*)-(.*)/prebuilt/.*" ANDROID_TOOLCHAIN_PARSED ${ANDROID_TOOLCHAIN_ROOT})
+        if(ANDROID_TOOLCHAIN_PARSED)
+            set(QT_ANDROID_TOOLCHAIN_PREFIX ${CMAKE_MATCH_1})
+            set(QT_ANDROID_TOOLCHAIN_VERSION ${CMAKE_MATCH_2})
+        else()
+            message(FATAL_ERROR "Failed to parse ANDROID_TOOLCHAIN_ROOT to get toolchain prefix and version")
+        endif()
     endif()
 
     # make sure that the output directory for the Android package exists
