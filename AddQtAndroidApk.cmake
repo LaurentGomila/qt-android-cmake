@@ -158,12 +158,13 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     # set some toolchain variables used by androiddeployqt;
     # unfortunately, Qt tries to build paths from these variables although these full paths
     # are already available in the toochain file, so we have to parse them
-    string(REGEX MATCH "${ANDROID_NDK}/toolchains/(.*)-(.*)/prebuilt/.*" ANDROID_TOOLCHAIN_PARSED ${ANDROID_TOOLCHAIN_ROOT})
+    string(REGEX MATCH "${ANDROID_NDK}/toolchains/(.*)-(.*)/prebuilt/.*/bin/(.*)-" ANDROID_TOOLCHAIN_PARSED ${ANDROID_TOOLCHAIN_PREFIX})
     if(ANDROID_TOOLCHAIN_PARSED)
         set(QT_ANDROID_TOOLCHAIN_PREFIX ${CMAKE_MATCH_1})
         set(QT_ANDROID_TOOLCHAIN_VERSION ${CMAKE_MATCH_2})
+        set(QT_ANDROID_TOOL_PREFIX ${CMAKE_MATCH_3})
     else()
-        message(FATAL_ERROR "Failed to parse ANDROID_TOOLCHAIN_ROOT to get toolchain prefix and version")
+        message(FATAL_ERROR "Failed to parse ANDROID_TOOLCHAIN_PREFIX to get toolchain prefix and version and tool prefix")
     endif()
 
     # make sure that the output directory for the Android package exists
