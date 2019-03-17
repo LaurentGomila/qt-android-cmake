@@ -151,9 +151,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         configure_file(${QT_ANDROID_MANIFEST_IN_REAL_PATH} ${QT_ANDROID_APP_PACKAGE_SOURCE_ROOT}/AndroidManifest.xml @ONLY)
     endif()
 
-    # define the STL shared library path
-    if(ANDROID_STL_SHARED_LIBRARIES)
-        list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
+    if(ANDROID_STL)
         if(ANDROID_STL_PATH)
             set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${ANDROID_STL}.so")
         else()
