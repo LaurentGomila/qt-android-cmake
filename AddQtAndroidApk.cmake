@@ -250,7 +250,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # check if the apk must be signed
     if(ARG_KEYSTORE)
-        set(SIGN_OPTIONS --release --sign ${ARG_KEYSTORE} --tsa http://timestamp.digicert.com)
+        set(SIGN_OPTIONS --release --sign ${ARG_KEYSTORE})
         if(ARG_KEYSTORE_PASSWORD)
             set(SIGN_OPTIONS ${SIGN_OPTIONS} --storepass ${ARG_KEYSTORE_PASSWORD})
         endif()
