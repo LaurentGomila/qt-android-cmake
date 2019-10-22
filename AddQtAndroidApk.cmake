@@ -44,7 +44,7 @@ if(NOT QT_ANDROID_NDK_ROOT)
     endif()
 endif()
 string(REPLACE "\\" "/" QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT}) # androiddeployqt doesn't like backslashes in paths
-set(QT_ANDROID_NDK_ROOT CACHE STRING ${QT_ANDROID_NDK_ROOT} "" FORCE)
+set(QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT} CACHE STRING "" FORCE)
 message(STATUS "Found Android NDK: ${QT_ANDROID_NDK_ROOT}")
 
 set(QT_ANDROID_CMAKE_FOUND ON CACHE BOOL "QtAndroidCMake have been found" FORCE)
