@@ -20,8 +20,8 @@ if(NOT Qt5Core_DIR)
     find_package(Qt5Core REQUIRED)
 endif()
 get_filename_component(QT_ANDROID_QT_ROOT "${Qt5Core_DIR}/../../.." ABSOLUTE)
-message(STATUS "Found Qt for Android: ${QT_ANDROID_QT_ROOT}")
 set(QT_ANDROID_QT_ROOT ${QT_ANDROID_QT_ROOT} CACHE STRING "qt sdk root folder")
+message(STATUS "Found Qt for Android: ${QT_ANDROID_QT_ROOT}")
 
 # find the Android SDK
 if(NOT QT_ANDROID_SDK_ROOT)
@@ -31,6 +31,7 @@ if(NOT QT_ANDROID_SDK_ROOT)
     endif()
 endif()
 string(REPLACE "\\" "/" QT_ANDROID_SDK_ROOT ${QT_ANDROID_SDK_ROOT}) # androiddeployqt doesn't like backslashes in paths
+set(QT_ANDROID_SDK_ROOT ${QT_ANDROID_SDK_ROOT} CACHE STRING "" FORCE)
 message(STATUS "Found Android SDK: ${QT_ANDROID_SDK_ROOT}")
 
 # find the Android NDK
