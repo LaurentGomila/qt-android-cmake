@@ -21,6 +21,7 @@ if(NOT Qt5Core_DIR)
 endif()
 get_filename_component(QT_ANDROID_QT_ROOT "${Qt5Core_DIR}/../../.." ABSOLUTE)
 message(STATUS "Found Qt for Android: ${QT_ANDROID_QT_ROOT}")
+set(QT_ANDROID_QT_ROOT ${QT_ANDROID_QT_ROOT} CACHE STRING "qt sdk root folder")
 
 # find the Android SDK
 if(NOT QT_ANDROID_SDK_ROOT)
