@@ -280,7 +280,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
             )
     endif() # QT_ANDROID_MIX_SOURCE_DEPLOY
 
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR
+    if(NOT CMAKE_BUILD_TYPE)
+        message(WARNING "CMAKE_BUILD_TYPE isn't set."
+        "--release will be specified to androiddeployqt by default")
+        set(QT_ANDROID_BUILD_TYPE --release)
+    elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR
         ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel" OR
         ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
         set(QT_ANDROID_BUILD_TYPE --release)
@@ -288,7 +292,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_BUILD_TYPE --debug)
     else()
         message(WARNING "CMAKE_BUILD_TYPE (${CMAKE_BUILD_TYPE}) isn't set to "
-        "Release | MinSizeRel | RelWithDebInfo | Debug. No --release or --debug will be specified to androiddeployqt")
+        "Release | MinSizeRel | RelWithDebInfo | Debug. --release will be specified to androiddeployqt by default")
+        set(QT_ANDROID_BUILD_TYPE --release)
     endif()
 
     if(ARG_VERBOSE)
