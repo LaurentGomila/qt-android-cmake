@@ -183,13 +183,10 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     elseif(ANDROID_STL STREQUAL c++_shared)
         set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
     else()
-        set(QT_ANDROID_STL_PATH)
-        if(ANDROID_STL_STATIC_LIBRARIES)
-            message(WARNING "ANDROID_STL_SHARED_LIBRARIES isn't defined, you might need to define ANDROID_STL (${ANDROID_STL}) to a shared stl library and not a static library")
-        else(ANDROID_STL_STATIC_LIBRARIES)
-            message(WARNING "ANDROID_STL_SHARED_LIBRARIES isn't defined, you might need to define ANDROID_STL (${ANDROID_STL}) to a shared stl library (for example c++_shared or gnustl_shared)."
-                "Please note that gnustl_shared is no longer supported from NDK 19")
-        endif(ANDROID_STL_STATIC_LIBRARIES)
+        message(WARNING "ANDROID_STL (${ANDROID_STL}) isn't a known shared stl library."
+            "You should consider setting ANDROID_STL to c++_shared (like qt)."
+            "Note that gnustl_shared is no longer supported")
+        set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
     endif()
 
     # set the list of dependant libraries
