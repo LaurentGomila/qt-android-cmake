@@ -306,9 +306,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
         ${QT_ANDROID_MIX_SOURCE_DEPLOY_COMMANDS}
 
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${QT_ANDROID_APP_BINARY_DIR}/libs/${ANDROID_ABI} # it seems that recompiled libraries are not copied if we don't remove them first
+        # it seems that recompiled libraries are not copied if we don't remove them first
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${QT_ANDROID_APP_BINARY_DIR}/libs/${ANDROID_ABI}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${QT_ANDROID_APP_BINARY_DIR}/libs/${ANDROID_ABI}
-        COMMAND ${CMAKE_COMMAND} -E echo package source in :  ${QT_ANDROID_STL_PATH}
         COMMAND ${CMAKE_COMMAND} -E copy ${QT_ANDROID_APP_PATH} ${QT_ANDROID_APP_BINARY_DIR}/libs/${ANDROID_ABI}
         COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt
         ${QT_ANDROID_VERBOSE}
