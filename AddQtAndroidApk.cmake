@@ -187,7 +187,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         if(ANDROID_STL_STATIC_LIBRARIES)
             message(WARNING "ANDROID_STL_SHARED_LIBRARIES isn't defined, you might need to define ANDROID_STL (${ANDROID_STL}) to a shared stl library and not a static library")
         else(ANDROID_STL_STATIC_LIBRARIES)
-            message(WARNING "ANDROID_STL_SHARED_LIBRARIES isn't defined, you might need to define ANDROID_STL (${ANDROID_STL}) to a shared stl library (for example c++_shared or gnustl_shared)")
+            message(WARNING "ANDROID_STL_SHARED_LIBRARIES isn't defined, you might need to define ANDROID_STL (${ANDROID_STL}) to a shared stl library (for example c++_shared or gnustl_shared)."
+                "Please note that gnustl_shared is no longer supported from NDK 19")
         endif(ANDROID_STL_STATIC_LIBRARIES)
     endif()
 
