@@ -1,3 +1,12 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
 include(${CMAKE_CURRENT_LIST_DIR}/AddQtAndroidApk.cmake)
+
+message(STATUS "Found Qt SDK: ${QT_ANDROID_QT_ROOT}")
+message(STATUS "Found Android SDK: ${QT_ANDROID_SDK_ROOT}")
+message(STATUS "Found Android NDK: ${QT_ANDROID_NDK_ROOT}")
+
+set(QT_ANDROID_SOURCE_DIR ${QT_ANDROID_SOURCE_DIR} CACHE STRING "Source directory of AddQtAndroidApk.cmake")
+set(QT_ANDROID_QT_ROOT ${QT_ANDROID_QT_ROOT} CACHE STRING "Qt sdk root folder")
+set(QT_ANDROID_SDK_ROOT ${QT_ANDROID_SDK_ROOT} CACHE STRING "" FORCE)
+set(QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT} CACHE STRING "" FORCE)

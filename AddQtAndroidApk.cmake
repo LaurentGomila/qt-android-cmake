@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
 # store the current source directory for future use
-set(QT_ANDROID_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "Source directory of AddQtAndroidApk.cmake")
+set(QT_ANDROID_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # check the JAVA_HOME environment variable
 # (I couldn't find a way to set it from this script, it has to be defined outside)
@@ -20,8 +20,6 @@ if(NOT Qt5Core_DIR)
     find_package(Qt5Core REQUIRED)
 endif()
 get_filename_component(QT_ANDROID_QT_ROOT "${Qt5Core_DIR}/../../.." ABSOLUTE)
-set(QT_ANDROID_QT_ROOT ${QT_ANDROID_QT_ROOT} CACHE STRING "qt sdk root folder")
-message(STATUS "Found Qt for Android: ${QT_ANDROID_QT_ROOT}")
 
 # find the Android SDK
 if(NOT QT_ANDROID_SDK_ROOT)
@@ -31,8 +29,6 @@ if(NOT QT_ANDROID_SDK_ROOT)
     endif()
 endif()
 string(REPLACE "\\" "/" QT_ANDROID_SDK_ROOT ${QT_ANDROID_SDK_ROOT}) # androiddeployqt doesn't like backslashes in paths
-set(QT_ANDROID_SDK_ROOT ${QT_ANDROID_SDK_ROOT} CACHE STRING "" FORCE)
-message(STATUS "Found Android SDK: ${QT_ANDROID_SDK_ROOT}")
 
 # find the Android NDK
 if(NOT QT_ANDROID_NDK_ROOT)
@@ -45,8 +41,6 @@ if(NOT QT_ANDROID_NDK_ROOT)
     endif()
 endif()
 string(REPLACE "\\" "/" QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT}) # androiddeployqt doesn't like backslashes in paths
-set(QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT} CACHE STRING "" FORCE)
-message(STATUS "Found Android NDK: ${QT_ANDROID_NDK_ROOT}")
 
 include(CMakeParseArguments)
 
