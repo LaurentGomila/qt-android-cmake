@@ -184,8 +184,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
     else()
         message(WARNING "ANDROID_STL (${ANDROID_STL}) isn't a known shared stl library."
-            "You should consider setting ANDROID_STL to c++_shared (like qt)."
-            "Note that gnustl_shared is no longer supported")
+            "You should consider setting ANDROID_STL to c++_shared (like Qt).")
         set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
     endif()
 
