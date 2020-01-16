@@ -120,13 +120,13 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         if(NOT QT_ANDROID_APP_VERSION)
             set(QT_ANDROID_APP_VERSION 1)
         endif()
-    else(ARG_VERSION_NAME)
+    else()
         # try to extract the app version from the target properties, or use the version code if not provided
         get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
         if(NOT QT_ANDROID_APP_VERSION)
             set(QT_ANDROID_APP_VERSION ${QT_ANDROID_APP_VERSION_CODE})
         endif()
-    endif(ARG_VERSION_NAME)
+    endif()
 
     # define the application source package directory
     if(ARG_PACKAGE_SOURCES)
