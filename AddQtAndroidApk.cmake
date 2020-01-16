@@ -48,9 +48,6 @@ string(REPLACE "\\" "/" QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT}) # androiddep
 set(QT_ANDROID_NDK_ROOT ${QT_ANDROID_NDK_ROOT} CACHE STRING "" FORCE)
 message(STATUS "Found Android NDK: ${QT_ANDROID_NDK_ROOT}")
 
-set(QT_ANDROID_CMAKE_FOUND ON CACHE BOOL "QtAndroidCMake have been found" FORCE)
-set(QT_ANDROID_CMAKE_VERSION "19.0.1" CACHE STRING "QtAndroidCMake version" FORCE)
-
 include(CMakeParseArguments)
 
 # define a macro to create an Android APK target
