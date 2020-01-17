@@ -1,23 +1,5 @@
 # Qt Android CMake utility
 
-This fork aim is to add new functionalities.
-
-* Customizable **VERSION_NAME** that can be set during the macro call.
-* Allow to deploy a mix between having a **PACKAGE_SOURCES** and using a configurable `AndroidManifest.xml.in`.
-* Specify a custom `AndroidManifest.xml.in` with **ANDROID_MANIFEST_IN_PATH** during the macro call.
-* Warning when a static or none **ANDROID_STL** is specified.
-* Move the *minSdkVersion* and *targetSdkVersion* from `AndroidManifest.xml.in` to a `build.gradle.in` to match new Android Policy.
-* Update the `AndroidManifest.xml.in` to the one in `Qt5.12.x`. `qtandroiddeploy` will add the required permission depending on what is deployed.
-* The apk is build inside a folder `${CMAKE_CURRENT_BINARY_DIR}/${SOURCE_TARGET}-${ANDROID_ABI}`.
-* Specify the `--release` or `--debug` flag to `qtandroiddeploy`.
-  - `--release` : *Release | MinSizeRel | RelWithDebInfo*
-  - `--debug` : *Debug*
-* `--verbose` can now be specified with the **VERBOSE** macro argument.
-
-For any question about this fork feel free to [contact me](olivier.ldff@gmail.com).
-
-Tested with `qt5.11 qt5.12` on `windows 1803`.
-
 ## What it is
 
 When using Qt for Android development, QMake & QtCreator is the only sane option for compiling and deploying. But if you prefer CMake, you're stuck and have no choice but writing .pro files that duplicate the functionality of your CMake files.
@@ -121,7 +103,7 @@ add_qt_android_apk(my_app_apk my_app
 
 ### ANDROID_MANIFEST_IN_PATH
 
-Specify a custom android manifest file. This can be used with **PACKAGE_SOURCE**. It can sometime be useful to modify the android manifest to add for example splash screen. But it is also very cool to use the cmake configure tool to handle variable as project name, version, *etc...*
+Specify a custom android manifest file. This can be used with **PACKAGE_SOURCE**. It can sometime be useful to modify the android manifest to add for example splash screen.  Or add custom permission not added by `qtandroiddeploy`. More information in [official doc](https://developer.android.com/guide/topics/manifest/manifest-intro).
 
 Example:
 
