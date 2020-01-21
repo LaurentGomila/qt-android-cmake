@@ -129,7 +129,7 @@ add_qt_android_apk(my_app_apk my_app
 
 ### VERSION_NAME
 
-Literal name of the version.
+Literal name of the version. If none is provided then the version will be extracted from `my_app` `VERSION` property. If none found then it will be defaulted to `PROJECT_VERSION`. If none is found then it is set to `VERSION_CODE`.
 
 Example:
 

@@ -124,7 +124,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         # try to extract the app version from the target properties, or use the version code if not provided
         get_property(QT_ANDROID_APP_VERSION TARGET ${SOURCE_TARGET} PROPERTY VERSION)
         if(NOT QT_ANDROID_APP_VERSION)
-            set(QT_ANDROID_APP_VERSION ${QT_ANDROID_APP_VERSION_CODE})
+            if(${PROJECT_VERSION} STREQUAL "")
+                set(QT_ANDROID_APP_VERSION ${QT_ANDROID_APP_VERSION_CODE})
+            else()
+                set(QT_ANDROID_APP_VERSION ${PROJECT_VERSION})
+            endif()
         endif()
     endif()
 
