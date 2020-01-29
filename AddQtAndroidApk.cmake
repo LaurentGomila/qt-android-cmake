@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.0)
-cmake_policy(SET CMP0026 OLD) # allow use of the LOCATION target property
 
 # store the current source directory for future use
 set(QT_ANDROID_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
@@ -67,12 +66,11 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     # parse the macro arguments
     cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
 
-    # extract the full path of the source target binary
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        get_property(QT_ANDROID_APP_PATH TARGET ${SOURCE_TARGET} PROPERTY DEBUG_LOCATION)
-    else()
-        get_property(QT_ANDROID_APP_PATH TARGET ${SOURCE_TARGET} PROPERTY LOCATION)
-    endif()
+    # set the destination of the target
+    set_target_properties( ${SOURCE_TARGET}
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
+    )
 
     # define the application name
     if(ARG_NAME)
@@ -80,7 +78,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     else()
         set(QT_ANDROID_APP_NAME ${SOURCE_TARGET})
     endif()
-
+    
     # define the application package name
     if(ARG_PACKAGE_NAME)
         set(QT_ANDROID_APP_PACKAGE_NAME ${ARG_PACKAGE_NAME})
@@ -170,7 +168,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI})
 
     # create the configuration file that will feed androiddeployqt
-    configure_file(${QT_ANDROID_SOURCE_DIR}/qtdeploy.json.in ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json @ONLY)
+    set(APP_TARGET ${SOURCE_TARGET})
+    configure_file(${QT_ANDROID_SOURCE_DIR}/qtdeploy.json.in ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.gen @ONLY)
+    file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json INPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.gen)
 
     # check if the apk must be signed
     if(ARG_KEYSTORE)
@@ -195,9 +195,6 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         ${TARGET}
         ALL
         DEPENDS ${SOURCE_TARGET}
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI} # it seems that recompiled libraries are not copied if we don't remove them first
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
-        COMMAND ${CMAKE_COMMAND} -E copy ${QT_ANDROID_APP_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI}
         COMMAND ${QT_ANDROID_QT_ROOT}/bin/androiddeployqt --verbose --output ${CMAKE_CURRENT_BINARY_DIR} --input ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json --gradle ${TARGET_LEVEL_OPTIONS} ${INSTALL_OPTIONS} ${SIGN_OPTIONS}
     )
 
