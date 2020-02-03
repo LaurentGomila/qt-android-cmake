@@ -133,6 +133,8 @@ The path to a directory containing additional files for the package (custom mani
 
 If you don't provide this argument, a default manifest is generated from the ```AndroidManifest.xml.in``` template and automatically used for building the APK.
 
+If your PACKAGE_SOURCES directory contains a ```AndroidManifest.xml.in``` template file rather than a direct ```AndroidManifest.xml``` , it is automatically detected by the tool, configured and outputted as ```AndroidManifest.xml```, so that you can still use the provided CMake variables in your custom manifest.
+
 Example:
 
 ```cmake
@@ -189,6 +191,7 @@ add_qt_android_apk(my_app_apk my_app
     INSTALL
 )
 ```
+
 ## Troubleshooting
 
 In case of 
