@@ -251,7 +251,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
 
     # determine the build type to pass to androiddeployqt
-    if(CMAKE_BUILD_TYPE AND ${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND NOT ARG_KEYSTORE)
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT ARG_KEYSTORE)
         set(QT_ANDROID_BUILD_TYPE --debug)
     elseif()
         set(QT_ANDROID_BUILD_TYPE --release)
