@@ -54,8 +54,13 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    // Do not compress Qt binary resources file
+    aaptOptions {
+        noCompress 'rcc'
+    }
+
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion @QT_ANDROID_NATIVE_API_LEVEL@
+        resConfigs "en"
     }
 }
