@@ -8,8 +8,11 @@
  "tool-prefix": "@QT_ANDROID_TOOL_PREFIX@",
  "toolchain-version": "@QT_ANDROID_TOOLCHAIN_VERSION@",
  "ndk-host": "@ANDROID_NDK_HOST_SYSTEM_NAME@",
+ "architectures": {
+    @QT_ANDROID_ARCHITECTURES@
+ },
  "target-architecture": "@ANDROID_ABI@",
- "application-binary": "@QT_ANDROID_APP_PATH@",
+ "application-binary": "@QT_ANDROID_APPLICATION_BINARY@",
  "android-package": "@QT_ANDROID_APP_PACKAGE_NAME@",
  "android-app-name": "@QT_ANDROID_APP_NAME@",
  "qml-root-path": "@CMAKE_SOURCE_DIR@",

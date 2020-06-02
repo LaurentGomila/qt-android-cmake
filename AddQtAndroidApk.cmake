@@ -71,6 +71,16 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # extract the full path of the source target binary
     set(QT_ANDROID_APP_PATH "$<TARGET_FILE:${SOURCE_TARGET}>")  # full file path to the app's main shared library
+    if(${Qt5Core_VERSION} VERSION_GREATER_EQUAL 5.14)
+        set(QT_ANDROID_SUPPORT_MULTI_ABI ON)
+    endif()
+
+    if(QT_ANDROID_SUPPORT_MULTI_ABI)
+        # qtandroideploy will append by itself the ANDROID_ABI to the target name
+        set(QT_ANDROID_APPLICATION_BINARY "${SOURCE_TARGET}")
+    else()
+        set(QT_ANDROID_APPLICATION_BINARY ${QT_ANDROID_APP_PATH})
+    endif()
 
     # define the application name
     if(ARG_NAME)
@@ -155,22 +165,35 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         message(WARNING "Failed to determine ANDROID_STL_PREFIX value for ANDROID_STL=${ANDROID_STL}")
     endif()
 
-    # define the STL shared library path
-    # up until NDK r18, ANDROID_STL_SHARED_LIBRARIES is populated by the NDK's toolchain file
-    # since NDK r19, the only option for a shared STL library is libc++_shared
-    if(ANDROID_STL_SHARED_LIBRARIES)
-        list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
-        if(ANDROID_STL_PATH)
-            set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${ANDROID_STL}.so")
-        else()
-            set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/lib${ANDROID_STL}.so")
-        endif()
-    elseif(ANDROID_STL STREQUAL c++_shared)
-        set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
+    if(QT_ANDROID_SUPPORT_MULTI_ABI)
+        # from Qt 5.14 qtandroideploy will find the correct stl.
+        set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs")
     else()
-        message(WARNING "ANDROID_STL (${ANDROID_STL}) isn't a known shared stl library."
-            "You should consider setting ANDROID_STL to c++_shared (like Qt).")
-        set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
+        # define the STL shared library path
+        # up until NDK r18, ANDROID_STL_SHARED_LIBRARIES is populated by the NDK's toolchain file
+        # since NDK r19, the only option for a shared STL library is libc++_shared
+        if(ANDROID_STL_SHARED_LIBRARIES)
+            list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
+            if(ANDROID_STL_PATH)
+                set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${ANDROID_STL}.so")
+            else()
+                set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/lib${ANDROID_STL}.so")
+            endif()
+        elseif(ANDROID_STL STREQUAL c++_shared)
+            set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
+        else()
+            message(WARNING "ANDROID_STL (${ANDROID_STL}) isn't a known shared stl library."
+                "You should consider setting ANDROID_STL to c++_shared (like Qt).")
+            set(QT_ANDROID_STL_PATH "${QT_ANDROID_NDK_ROOT}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/libc++_shared.so")
+        endif()
+    endif()
+
+    # From Qt 5.14 qtandroideploy "target-architecture" is no longer valid in input file
+    # It have been replaced by "architectures": { "${ANDROID_ABI}": "${ANDROID_ABI}" }
+    # This allow to package multiple ABI in a single apk
+    # For now we only support single ABI build with this script (to ensure it work with Qt5.14 & Qt5.15)
+    if(QT_ANDROID_SUPPORT_MULTI_ABI)
+        set(QT_ANDROID_ARCHITECTURES "\"${ANDROID_ABI}\":\"${ANDROID_ABI}\"")
     endif()
 
     # set the list of dependant libraries
