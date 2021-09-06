@@ -259,8 +259,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     configure_file(${QT_ANDROID_SOURCE_DIR}/build.gradle.in ${QT_ANDROID_APP_BINARY_DIR}/build.gradle @ONLY)
 
     # check if the apk must be signed
-    if(ARG_KEYSTORE)
-        set(SIGN_OPTIONS --sign ${ARG_KEYSTORE})
+    if(ARG_KEYSTORE AND ARG_KEYSTORE_ALIAS)
+        set(SIGN_OPTIONS --sign ${ARG_KEYSTORE} ${ARG_KEYSTORE_ALIAS})
         if(ARG_KEYSTORE_PASSWORD)
             set(SIGN_OPTIONS ${SIGN_OPTIONS} --storepass ${ARG_KEYSTORE_PASSWORD})
         endif()
