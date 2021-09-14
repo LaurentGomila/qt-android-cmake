@@ -67,7 +67,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE;APK_BUILD_TYPE" ${ARGN})
 
     # extract the full path of the source target binary
     set(QT_ANDROID_APP_PATH "$<TARGET_FILE:${SOURCE_TARGET}>")  # full file path to the app's main shared library
@@ -277,12 +277,19 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
 
     # determine the build type to pass to androiddeployqt
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT ARG_KEYSTORE)
+    string(STRIP "${ARG_APK_BUILD_TYPE}" ARG_APK_BUILD_TYPE)
+    string(TOLOWER "${ARG_APK_BUILD_TYPE}" ARG_APK_BUILD_TYPE)
+    if (NOT ARG_APK_BUILD_TYPE OR "${ARG_APK_BUILD_TYPE}" STREQUAL "auto")
+      if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT ARG_KEYSTORE)
         set(QT_ANDROID_BUILD_TYPE --debug)
-    else()
+      else()
         set(QT_ANDROID_BUILD_TYPE --release)
-    endif()
-
+      endif()
+    elseif ("${ARG_APK_BUILD_TYPE}" STREQUAL "debug" OR "${ARG_APK_BUILD_TYPE}" STREQUAL "release")
+      set(QT_ANDROID_BUILD_TYPE "--${ARG_APK_BUILD_TYPE}")
+    else ()
+      message(FATAL_ERROR "Unsupport APK_BUILD_TYPE ${ARG_APK_BUILD_TYPE}")
+    endif ()
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
     add_custom_target(
         ${TARGET}
