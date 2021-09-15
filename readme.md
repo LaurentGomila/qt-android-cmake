@@ -180,6 +180,11 @@ add_qt_android_apk(my_app_apk my_app
 )
 ```
 
+### APK_BUILD_TYPE
+
+Android (.apk) build type: "release" or "debug". Possible values: "auto", "debug" and "release". By default, without setting `APK_BUILD_TYPE` explicitly value  is  "auto".
+"auto" cause setting `APK_BUILD_TYPE` depend on `CMAKE_BUILD_TYPE`.
+
 ### INSTALL
 
 If this option is given, the created APK will be deployed to a connected Android device. By default, the chosen device is the default one, i.e. the first one of the ADB device list.
