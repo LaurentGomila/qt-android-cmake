@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 # store the current source directory for future use
 set(QT_ANDROID_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
@@ -294,6 +294,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     add_custom_target(
         ${TARGET}
         ALL
+        # prevent output buffering in Ninja case, because of gradle part
+        # may take too long
+        USES_TERMINAL
         DEPENDS ${SOURCE_TARGET}
         ${QT_ANDROID_PRE_COMMANDS}
         # it seems that recompiled libraries are not copied if we don't remove them first
