@@ -123,6 +123,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         endif()
     endif()
 
+    set(BUILD_GRADLE_TEMPLATE ${QT_ANDROID_SOURCE_DIR}/build.gradle.in)
     # check if the user provides a custom source package and its own manifest file
     if(ARG_PACKAGE_SOURCES)
         if(EXISTS "${ARG_PACKAGE_SOURCES}/AndroidManifest.xml")
@@ -132,6 +133,10 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
             # custom manifest template provided
             set(QT_ANDROID_MANIFEST_TEMPLATE "${ARG_PACKAGE_SOURCES}/AndroidManifest.xml.in")
         endif()
+
+        if (EXISTS "${ARG_PACKAGE_SOURCES}/build.gradle.in")
+            set(BUILD_GRADLE_TEMPLATE "${ARG_PACKAGE_SOURCES}/build.gradle.in")
+        endif ()
     endif()
 
     # generate a source package directory if none was provided, or if we need to configure a manifest file
@@ -256,7 +261,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     )
     # 3. Configure build.gradle to properly work with Android Studio import
     set(QT_ANDROID_NATIVE_API_LEVEL ${ANDROID_NATIVE_API_LEVEL})
-    configure_file(${QT_ANDROID_SOURCE_DIR}/build.gradle.in ${QT_ANDROID_APP_BINARY_DIR}/build.gradle @ONLY)
+    configure_file(${BUILD_GRADLE_TEMPLATE} ${QT_ANDROID_APP_BINARY_DIR}/build.gradle @ONLY)
 
     # check if the apk must be signed
     if(ARG_KEYSTORE)

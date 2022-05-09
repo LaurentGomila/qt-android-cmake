@@ -133,7 +133,7 @@ The path to a directory containing additional files for the package (custom mani
 
 If you don't provide this argument, a default manifest is generated from the ```AndroidManifest.xml.in``` template and automatically used for building the APK.
 
-If your PACKAGE_SOURCES directory contains a ```AndroidManifest.xml.in``` template file rather than a direct ```AndroidManifest.xml``` , it is automatically detected by the tool, configured and outputted as ```AndroidManifest.xml```, so that you can still use the provided CMake variables in your custom manifest.
+If your PACKAGE_SOURCES directory contains a ```AndroidManifest.xml.in``` template file rather than a direct ```AndroidManifest.xml``` , it is automatically detected by the tool, configured and outputted as ```AndroidManifest.xml```, so that you can still use the provided CMake variables in your custom manifest. Also if your PACKAGE_SOURCES directory contains a ```build.gradle.in``` it would be handled in the same way as a ```AndroidManifest.xml.in```.
 
 Example:
 
