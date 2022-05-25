@@ -168,6 +168,19 @@ add_qt_android_apk(my_app_apk my_app
 )
 ```
 
+### KEY_PASSWORD
+
+The password associated to the given key. Note that this option is only considered if the ```KEYSTORE``` argument is used. If it is not given, the password will be asked directly in the console at build time.
+
+Example:
+
+```cmake
+add_qt_android_apk(my_app_apk my_app
+    KEYSTORE ${CMAKE_CURRENT_LIST_DIR}/mykey.keystore myalias
+    KEY_PASSWORD xxxxx
+)
+```
+
 ### DEPENDS
 
 A list of dependencies (libraries) to be included into the APK. All the dependencies of the application must be listed here; if one is missing, the deployed application will fail to run on the device. The listed items can be either target names, or library paths.

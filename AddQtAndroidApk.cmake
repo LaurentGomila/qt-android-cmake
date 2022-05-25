@@ -60,6 +60,7 @@ include(CMakeParseArguments)
 #     PACKAGE_SOURCES ${CMAKE_CURRENT_LIST_DIR}/my-android-sources
 #     KEYSTORE ${CMAKE_CURRENT_LIST_DIR}/mykey.keystore myalias
 #     KEYSTORE_PASSWORD xxxx
+#     KEY_PASSWORD xxxx
 #     DEPENDS a_linked_target "path/to/a_linked_library.so" ...
 #     INSTALL
 #)
@@ -67,7 +68,7 @@ include(CMakeParseArguments)
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
     # parse the macro arguments
-    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD" "DEPENDS;KEYSTORE;APK_BUILD_TYPE" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL" "NAME;VERSION_CODE;PACKAGE_NAME;PACKAGE_SOURCES;KEYSTORE_PASSWORD;KEY_PASSWORD" "DEPENDS;KEYSTORE;APK_BUILD_TYPE" ${ARGN})
 
     # extract the full path of the source target binary
     set(QT_ANDROID_APP_PATH "$<TARGET_FILE:${SOURCE_TARGET}>")  # full file path to the app's main shared library
@@ -267,7 +268,7 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     if(ARG_KEYSTORE)
         set(SIGN_OPTIONS --sign ${ARG_KEYSTORE})
         if(ARG_KEYSTORE_PASSWORD)
-            set(SIGN_OPTIONS ${SIGN_OPTIONS} --storepass ${ARG_KEYSTORE_PASSWORD})
+            set(SIGN_OPTIONS ${SIGN_OPTIONS} --keypass ${ARG_KEY_PASSWORD} --storepass ${ARG_KEYSTORE_PASSWORD})
         endif()
     endif()
 
